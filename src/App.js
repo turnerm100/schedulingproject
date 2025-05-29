@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import PatientList from './components/PatientList'; // Placeholder for future patient list
 import './App.css';
 import DeactivatedPatientsList from './components/DeactivatedPatientsList';
+import DropdownSettings from './components/DropdownSettings';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
 <nav style={{ padding: '10px', background: '#153D64' }}>
   <Link to="/" style={{ color: 'white', marginRight: '15px' }}>Dashboard</Link>
   <Link to="/patients" style={{ color: 'white', marginRight: '15px' }}>Patients</Link>
-  <Link to="/deactivated-patients" style={{ color: 'white' }}>Deactivated Patients</Link>
+  <Link to="/deactivated-patients" style={{ color: 'white', marginRight: '15px' }}>Deactivated Patients</Link>
+  <Link to="/dropdown-settings" style={{ color: 'white' }}>Dropdown Settings</Link> {/* ✅ add this */}
 </nav>
         {/* Routes */}
         <Routes>
@@ -22,6 +24,7 @@ function App() {
           <Route path="/patients" element={<PatientList />} />
           <Route path="*" element={<h2 style={{ padding: '20px' }}>404 - Page Not Found</h2>} />
           <Route path="/deactivated-patients" element={<DeactivatedPatientsList />} />
+          <Route path="/dropdown-settings" element={<DropdownSettings />} />
         </Routes>
       </div>
     </Router>

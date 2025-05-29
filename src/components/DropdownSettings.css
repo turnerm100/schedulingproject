@@ -1,0 +1,60 @@
+/* src/components/DropdownSettings.css */
+.dropdown-settings {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-family: sans-serif;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #153D64;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-row label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.save-btn {
+  background-color: #153D64;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 10px;
+  color: green;
+}
+
+.existing-keys {
+  margin-top: 30px;
+}
+
+.load-btn {
+  background-color: #A6C9EC;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 4px 0;
+  cursor: pointer;
+}
