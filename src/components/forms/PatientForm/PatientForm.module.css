@@ -27,7 +27,8 @@
   flex-wrap: wrap;
 }
 
-input, textarea {
+input,
+textarea {
   flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
@@ -45,11 +46,93 @@ textarea {
   gap: 10px;
 }
 
+/* Base button style for all buttons */
 button {
   padding: 8px 16px;
-  background-color: #153D64;
-  color: white;
   border: none;
   border-radius: 4px;
+  font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Tabs */
+.tabContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.tabButton {
+  background-color: #D0DFEC;
+  color: #153D64;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+}
+
+.tabButton:hover {
+  background-color: #B5CFE6;
+}
+
+.activeTab {
+  background-color: #153D64;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #153D64;
+}
+
+/* Shared look for Save and Cancel buttons */
+.primaryButton {
+  background-color: #D0DFEC;
+  color: #153D64;
+  border: 1px solid #ccc;
+}
+
+.primaryButton:hover {
+  background-color: #B5CFE6;
+}
+
+/* Deactivate button */
+.dangerButton {
+  background-color: #b00020;
+  color: white;
+}
+
+/* Form area scroll */
+.formContent {
+  min-height: 400px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+}
+
+.formContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formContent::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 4px;
+}
+
+/* Labels and fields */
+.label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  display: block;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 120px;
+  margin-bottom: 10px;
 }

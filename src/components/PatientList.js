@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import PatientForm from './forms/PatientForm/PatientForm';
 
@@ -32,17 +32,6 @@ export default function PatientList() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this patient?')) {
-      try {
-        await deleteDoc(doc(db, 'patients', id));
-        fetchPatients();
-      } catch (error) {
-        console.error('Error deleting patient:', error);
-      }
-    }
-  };
-
   const handleNewPatient = () => {
     setSelectedPatient(null);
     setShowForm(true);
@@ -72,14 +61,13 @@ export default function PatientList() {
           <thead>
             <tr style={{ backgroundColor: '#f5f5f5' }}>
               {[
-                'MRN#', 'Last Name', 'First Name', 'DOB', 'Gender', 'Primary Phone',
+                'Name', 'DOB', 'MRN#', 'Gender', 'Primary Phone',
                 'Secondary Phone', 'Pharm Team', 'Nurse Team', 'Status', 'Notes',
                 'Specialty Therapy Type', 'Visit Location Specialty', 'Infusion Frequency',
                 'Date of Next Scheduled Specialty Infusion', 'Next Infusion Due',
                 'Next Inf Due Confirmed', 'Est. End of Infusion Therapy', 'Home Therapy Type',
                 'Skilled RN Visit Type', 'Visit Location Non Specialty', 'Visit Frequency',
-                'Date of next scheduled Skilled RN Visit', 'Next Visit Due', 'Estimated End Date of Therapy',
-                'Actions'
+                'Date of next scheduled Skilled RN Visit', 'Next Visit Due', 'Estimated End Date of Therapy'
               ].map((header, idx) => (
                 <th key={idx} style={{ borderBottom: '1px solid #ccc', padding: '10px', whiteSpace: 'nowrap' }}>{header}</th>
               ))}
@@ -88,10 +76,16 @@ export default function PatientList() {
           <tbody>
             {patients.map((p) => (
               <tr key={p.id}>
-                <td style={{ padding: '8px' }}>{p.mrn}</td>
-                <td style={{ padding: '8px' }}>{p.lastName}</td>
-                <td style={{ padding: '8px' }}>{p.firstName}</td>
+                <td style={{ padding: '8px' }}>
+                  <button
+                    onClick={() => handleEdit(p)}
+                    style={{ background: 'none', border: 'none', color: '#153D64', textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    {p.lastName}, {p.firstName}
+                  </button>
+                </td>
                 <td style={{ padding: '8px' }}>{p.dob}</td>
+                <td style={{ padding: '8px' }}>{p.mrn}</td>
                 <td style={{ padding: '8px' }}>{p.gender}</td>
                 <td style={{ padding: '8px' }}>{p.primaryPhone}</td>
                 <td style={{ padding: '8px' }}>{p.secondaryPhone}</td>
@@ -113,10 +107,6 @@ export default function PatientList() {
                 <td style={{ padding: '8px' }}>{p.nextScheduledRnVisit}</td>
                 <td style={{ padding: '8px' }}>{p.nextVisitDue}</td>
                 <td style={{ padding: '8px' }}>{p.estimatedEndDate}</td>
-                <td style={{ padding: '8px' }}>
-                  <button onClick={() => handleEdit(p)} style={{ marginRight: '6px' }}>Edit</button>
-                  <button onClick={() => handleDelete(p.id)}>Delete</button>
-                </td>
               </tr>
             ))}
           </tbody>
