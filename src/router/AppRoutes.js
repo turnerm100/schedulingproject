@@ -2,6 +2,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+import MainLayout from '../components/MainLayout';
 import Home from '../components/Home';
 import Dashboard from '../components/Dashboard';
 import PharmacyPage from '../components/PharmacyPage';
@@ -22,25 +23,27 @@ import StaffCalendar from '../components/staff/StaffCalendar';
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/dashboard" element={<Dashboard />} />
-    <Route path="/pharmacy" element={<PharmacyPage />} />
+    <Route path="/" element={<MainLayout />}>
+      <Route index element={<Home />} />
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="pharmacy" element={<PharmacyPage />} />
 
-    <Route path="/admin" element={<AdminPage />}>
-      <Route path="settings" element={<AdminSettings />} />
-      <Route path="users" element={<AdminUsers />} />
-      <Route path="dropdown-settings" element={<DropdownSettings />} />
-    </Route>
+      <Route path="admin" element={<AdminPage />}>
+        <Route path="settings" element={<AdminSettings />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="dropdown-settings" element={<DropdownSettings />} />
+      </Route>
 
-    <Route path="/patients" element={<PatientPage />}>
-      <Route path="list" element={<PatientList />} />
-      <Route path="visit-info" element={<VisitInfo />} />
-      <Route path="deactivated" element={<DeactivatedPatientsList />} />
-    </Route>
+      <Route path="patients" element={<PatientPage />}>
+        <Route path="list" element={<PatientList />} />
+        <Route path="visit-info" element={<VisitInfo />} />
+        <Route path="deactivated" element={<DeactivatedPatientsList />} />
+      </Route>
 
-    <Route path="/staff" element={<StaffPage />}>
-      <Route path="list" element={<StaffManager />} />
-      <Route path="calendar" element={<StaffCalendar />} />
+      <Route path="staff" element={<StaffPage />}>
+        <Route path="list" element={<StaffManager />} />
+        <Route path="calendar" element={<StaffCalendar />} />
+      </Route>
     </Route>
   </Routes>
 );

@@ -1,6 +1,6 @@
 // src/components/MainLayout.js
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 export default function MainLayout({ children }) {
   return (
@@ -88,9 +88,12 @@ export default function MainLayout({ children }) {
         </div>
       </nav>
 
-      <main style={{ padding: '20px' }}>
-        {children}
-      </main>
+import { Outlet } from 'react-router-dom';
+
+// ... inside your component
+<main style={{ padding: '20px' }}>
+  <Outlet />
+</main>
     </div>
   );
 }

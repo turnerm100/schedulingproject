@@ -1,0 +1,14 @@
+/* src/components/patients/DeactivatedPatientsList.module.css */
+.container {
+  padding: 20px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
