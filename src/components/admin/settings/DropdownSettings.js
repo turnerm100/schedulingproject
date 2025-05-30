@@ -1,8 +1,8 @@
 // src/components/DropdownSettings.js
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase/config'; // ✅ Make sure this path is correct
+import { db } from '../../../firebase/config';
 import { doc, getDoc, setDoc, getDocs, collection } from 'firebase/firestore';
-import './DropdownSettings.css';
+import './DropdownSettings.css'; // ✅ No change needed — still local
 
 export default function DropdownSettings() {
   const [fieldKey, setFieldKey] = useState('');

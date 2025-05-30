@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/config';
-import PatientForm from './forms/PatientForm/PatientForm';
+import { db } from '../../firebase/config';
+import PatientForm from '../forms/PatientForm/PatientForm';
 
 export default function PatientList() {
   const [patients, setPatients] = useState([]);
