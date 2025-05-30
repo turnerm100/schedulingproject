@@ -1,52 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../../firebase/config';
-import { doc, setDoc, addDoc, deleteDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, addDoc, deleteDoc, collection, getDoc } from 'firebase/firestore';
 import styles from './PatientForm.module.css';
 
 export default function PatientForm({ existingPatient, onClose }) {
   const [formData, setFormData] = useState({
-    mrn: '',
-    lastName: '',
-    firstName: '',
-    dob: '',
-    gender: '',
-    primaryPhone: '',
-    secondaryPhone: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    pharmacyTeam: '',
-    nurseTeam: '',
-    status: '',
-    notes: '',
-    specialtyTherapyType: '',
-    visitLocationSpecialty: '',
-    infusionFrequency: '',
-    nextSpecialtyInfusionDate: '',
-    nextInfusionDue: '',
-    nextInfusionConfirmed: '',
-    estimatedEndOfInfusion: '',
-    homeTherapyType: '',
-    skilledRnVisitType: '',
-    visitLocationNonSpecialty: '',
-    visitFrequency: '',
-    nextSkilledRnVisitDate: '',
-    nextVisitDue: '',
-    estimatedEndOfTherapy: ''
+    mrn: '', lastName: '', firstName: '', dob: '', gender: '',
+    phones: [{ type: 'Primary', number: '' }],
+    address: { line1: '', line2: '', city: '', state: '', zip: '' },
+    shippingAddress: { line1: '', line2: '', city: '', state: '', zip: '' },
+    billingAddress: { line1: '', line2: '', city: '', state: '', zip: '' },
+    pharmacyTeam: '', nurseTeam: '', status: '',
+    notes: '', specialtyTherapyType: '', visitLocationSpecialty: '', infusionFrequency: '',
+    nextSpecialtyInfusionDate: '', nextInfusionDue: '', nextInfusionConfirmed: '', estimatedEndOfInfusion: '',
+    homeTherapyType: '', skilledRnVisitType: '', visitLocationNonSpecialty: '', visitFrequency: '',
+    nextSkilledRnVisitDate: '', nextVisitDue: '', estimatedEndOfTherapy: ''
   });
+
+const [dropdowns, setDropdowns] = useState({
+  gender: [],
+  pharmacyTeam: [],
+  nurseTeam: [],
+  status: [],
+  specialtyTherapyType: [],
+  visitLocation: [],
+  infusionFrequency: [],
+  visitLocationSpecialty: [],
+  visitLocationNonSpecialty: [],
+  skilledRnVisitType: [],
+  homeTherapyType: [],
+  visitFrequency: []
+});
 
   const [activeTab, setActiveTab] = useState('demographics');
 
   useEffect(() => {
-    if (existingPatient) {
-      setFormData(existingPatient);
-    }
+    if (existingPatient) setFormData(existingPatient);
   }, [existingPatient]);
+
+  useEffect(() => {
+    const loadDropdowns = async () => {
+      const keys = Object.keys(dropdowns);
+      const loaded = {};
+      for (const key of keys) {
+        const snap = await getDoc(doc(db, 'dropdownOptions', key));
+        loaded[key] = snap.exists() ? snap.data().options : [];
+      }
+setDropdowns((prev) => {
+  const updated = { ...prev };
+  Object.keys(prev).forEach(key => {
+    updated[key] = loaded[key] || [];
+  });
+  return updated;
+});
+
+    };
+    loadDropdowns();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhoneChange = (index, key, value) => {
+    const updatedPhones = [...formData.phones];
+    updatedPhones[index][key] = value;
+    setFormData((prev) => ({ ...prev, phones: updatedPhones }));
+  };
+
+  const addPhone = () => {
+    setFormData((prev) => ({ ...prev, phones: [...prev.phones, { type: '', number: '' }] }));
+  };
+
+  const removePhone = (index) => {
+    const updatedPhones = formData.phones.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, phones: updatedPhones }));
+  };
+
+  const handleAddressChange = (section, key, value) => {
+    setFormData((prev) => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
   };
 
   const handleSubmit = async (e) => {
@@ -76,16 +109,36 @@ export default function PatientForm({ existingPatient, onClose }) {
     }
   };
 
+const renderDropdown = (id, label, options = []) => {
+  const safeOptions = Array.isArray(options) ? options : [];
+
+  return (
+    <div className={styles.field}>
+      <label htmlFor={id} className={styles.label}>{label}</label>
+      <select id={id} name={id} value={formData[id] || ''} onChange={handleChange}>
+        <option value="">Select...</option>
+        {safeOptions.map(opt => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
   const TabButton = ({ tab, label }) => (
-    <button
-      type="button"
-      className={`${styles.tabButton} ${activeTab === tab ? styles.activeTab : ''}`}
-      onClick={() => setActiveTab(tab)}
-    >
+    <button type="button" className={`${styles.tabButton} ${activeTab === tab ? styles.activeTab : ''}`} onClick={() => setActiveTab(tab)}>
       {label}
     </button>
   );
 
+  // ✅ SAFETY CHECK — place here
+  if (!dropdowns || typeof dropdowns !== 'object') {
+    return <div>Loading form...</div>;
+  }
+
+  console.log('Dropdowns state:', dropdowns); // ✅ Place here
+
+  // 👇 Existing JSX starts here
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
@@ -102,149 +155,108 @@ export default function PatientForm({ existingPatient, onClose }) {
             {activeTab === 'demographics' && (
               <>
                 <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="lastName" className={styles.label}>Last Name</label>
-                    <input id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="firstName" className={styles.label}>First Name</label>
-                    <input id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} />
-                  </div>
+                  <div className={styles.field}><label>Last Name</label><input name="lastName" value={formData.lastName} onChange={handleChange} /></div>
+                  <div className={styles.field}><label>First Name</label><input name="firstName" value={formData.firstName} onChange={handleChange} /></div>
                 </div>
                 <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="dob" className={styles.label}>DOB</label>
-                    <input id="dob" name="dob" value={formData.dob} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="mrn" className={styles.label}>MRN#</label>
-                    <input id="mrn" name="mrn" value={formData.mrn} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="gender" className={styles.label}>Gender</label>
-                    <input id="gender" name="gender" value={formData.gender} onChange={handleChange} />
-                  </div>
+                  <div className={styles.field}><label>DOB</label><input name="dob" value={formData.dob} onChange={handleChange} /></div>
+                  <div className={styles.field}><label>MRN#</label><input name="mrn" value={formData.mrn} onChange={handleChange} /></div>
+                  {renderDropdown('gender', 'Gender', dropdowns.gender)}
                 </div>
+
+                {formData.phones.map((phone, i) => (
+                  <div className={styles.row} key={i}>
+                    <div className={styles.field}><label>Type</label><input value={phone.type} onChange={e => handlePhoneChange(i, 'type', e.target.value)} /></div>
+                    <div className={styles.field}><label>Number</label><input value={phone.number} onChange={e => handlePhoneChange(i, 'number', e.target.value)} /></div>
+                    <button type="button" onClick={() => removePhone(i)}>Remove</button>
+                  </div>
+                ))}
+                <button type="button" onClick={addPhone}>+ Add Phone</button>
+
+                <h4>Primary Address</h4>
                 <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="primaryPhone" className={styles.label}>Primary Phone</label>
-                    <input id="primaryPhone" name="primaryPhone" value={formData.primaryPhone} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="secondaryPhone" className={styles.label}>Secondary Phone</label>
-                    <input id="secondaryPhone" name="secondaryPhone" value={formData.secondaryPhone} onChange={handleChange} />
-                  </div>
+                  <div className={styles.field}><label>Line 1</label><input value={formData.address.line1} onChange={e => handleAddressChange('address', 'line1', e.target.value)} /></div>
+                  <div className={styles.field}><label>Line 2</label><input value={formData.address.line2} onChange={e => handleAddressChange('address', 'line2', e.target.value)} /></div>
+                  <div className={styles.field}><label>City</label><input value={formData.address.city} onChange={e => handleAddressChange('address', 'city', e.target.value)} /></div>
+                  <div className={styles.field}><label>State</label><input value={formData.address.state} onChange={e => handleAddressChange('address', 'state', e.target.value)} /></div>
+                  <div className={styles.field}><label>Zip</label><input value={formData.address.zip} onChange={e => handleAddressChange('address', 'zip', e.target.value)} /></div>
                 </div>
+
+                <h4>Shipping Address</h4>
                 <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="address" className={styles.label}>Address</label>
-                    <input id="address" name="address" value={formData.address} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="city" className={styles.label}>City</label>
-                    <input id="city" name="city" value={formData.city} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="state" className={styles.label}>State</label>
-                    <input id="state" name="state" value={formData.state} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="zip" className={styles.label}>Zip</label>
-                    <input id="zip" name="zip" value={formData.zip} onChange={handleChange} />
-                  </div>
+                  <div className={styles.field}><label>Line 1</label><input value={formData.shippingAddress.line1} onChange={e => handleAddressChange('shippingAddress', 'line1', e.target.value)} /></div>
+                  <div className={styles.field}><label>Line 2</label><input value={formData.shippingAddress.line2} onChange={e => handleAddressChange('shippingAddress', 'line2', e.target.value)} /></div>
+                  <div className={styles.field}><label>City</label><input value={formData.shippingAddress.city} onChange={e => handleAddressChange('shippingAddress', 'city', e.target.value)} /></div>
+                  <div className={styles.field}><label>State</label><input value={formData.shippingAddress.state} onChange={e => handleAddressChange('shippingAddress', 'state', e.target.value)} /></div>
+                  <div className={styles.field}><label>Zip</label><input value={formData.shippingAddress.zip} onChange={e => handleAddressChange('shippingAddress', 'zip', e.target.value)} /></div>
                 </div>
+
+                <h4>Billing Address</h4>
                 <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="pharmacyTeam" className={styles.label}>Pharmacy Team</label>
-                    <input id="pharmacyTeam" name="pharmacyTeam" value={formData.pharmacyTeam} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="nurseTeam" className={styles.label}>Nurse Team</label>
-                    <input id="nurseTeam" name="nurseTeam" value={formData.nurseTeam} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="status" className={styles.label}>Status</label>
-                    <input id="status" name="status" value={formData.status} onChange={handleChange} />
-                  </div>
+                  <div className={styles.field}><label>Line 1</label><input value={formData.billingAddress.line1} onChange={e => handleAddressChange('billingAddress', 'line1', e.target.value)} /></div>
+                  <div className={styles.field}><label>Line 2</label><input value={formData.billingAddress.line2} onChange={e => handleAddressChange('billingAddress', 'line2', e.target.value)} /></div>
+                  <div className={styles.field}><label>City</label><input value={formData.billingAddress.city} onChange={e => handleAddressChange('billingAddress', 'city', e.target.value)} /></div>
+                  <div className={styles.field}><label>State</label><input value={formData.billingAddress.state} onChange={e => handleAddressChange('billingAddress', 'state', e.target.value)} /></div>
+                  <div className={styles.field}><label>Zip</label><input value={formData.billingAddress.zip} onChange={e => handleAddressChange('billingAddress', 'zip', e.target.value)} /></div>
+                </div>
+
+                <div className={styles.row}>
+                  {renderDropdown('pharmacyTeam', 'Pharmacy Team', dropdowns.pharmacyTeam)}
+                  {renderDropdown('nurseTeam', 'Nurse Team', dropdowns.nurseTeam)}
+                  {renderDropdown('status', 'Status', dropdowns.status)}
                 </div>
               </>
             )}
 
-            {activeTab === 'infusion' && (
-              <>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="specialtyTherapyType" className={styles.label}>Specialty Therapy Type</label>
-                    <input id="specialtyTherapyType" name="specialtyTherapyType" value={formData.specialtyTherapyType} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="visitLocationSpecialty" className={styles.label}>Visit Location Specialty</label>
-                    <input id="visitLocationSpecialty" name="visitLocationSpecialty" value={formData.visitLocationSpecialty} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="infusionFrequency" className={styles.label}>Infusion Frequency</label>
-                    <input id="infusionFrequency" name="infusionFrequency" value={formData.infusionFrequency} onChange={handleChange} />
-                  </div>
-                </div>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="nextSpecialtyInfusionDate" className={styles.label}>Next Scheduled Specialty Infusion</label>
-                    <input id="nextSpecialtyInfusionDate" name="nextSpecialtyInfusionDate" value={formData.nextSpecialtyInfusionDate} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="nextInfusionDue" className={styles.label}>Next Infusion Due</label>
-                    <input id="nextInfusionDue" name="nextInfusionDue" value={formData.nextInfusionDue} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="nextInfusionConfirmed" className={styles.label}>Next Inf Due Confirmed</label>
-                    <input id="nextInfusionConfirmed" name="nextInfusionConfirmed" value={formData.nextInfusionConfirmed} onChange={handleChange} />
-                  </div>
-                </div>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="estimatedEndOfInfusion" className={styles.label}>Est. End of Infusion Therapy</label>
-                    <input id="estimatedEndOfInfusion" name="estimatedEndOfInfusion" value={formData.estimatedEndOfInfusion} onChange={handleChange} />
-                  </div>
-                </div>
-              </>
-            )}
+{activeTab === 'infusion' && (
+  <>
+    {renderDropdown('specialtyTherapyType', 'Specialty Therapy Type', dropdowns.specialtyTherapyType)}
+    {renderDropdown('visitLocation', 'Visit Location', dropdowns.visitLocation)}
+    {renderDropdown('infusionFrequency', 'Infusion Frequency', dropdowns.infusionFrequency)}
 
-            {activeTab === 'homecare' && (
-              <>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="homeTherapyType" className={styles.label}>Home Therapy Type</label>
-                    <input id="homeTherapyType" name="homeTherapyType" value={formData.homeTherapyType} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="skilledRnVisitType" className={styles.label}>Skilled RN Visit Type</label>
-                    <input id="skilledRnVisitType" name="skilledRnVisitType" value={formData.skilledRnVisitType} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="visitLocationNonSpecialty" className={styles.label}>Visit Location Non Specialty</label>
-                    <input id="visitLocationNonSpecialty" name="visitLocationNonSpecialty" value={formData.visitLocationNonSpecialty} onChange={handleChange} />
-                  </div>
-                </div>
-                <div className={styles.row}>
-                  <div className={styles.field}>
-                    <label htmlFor="visitFrequency" className={styles.label}>Visit Frequency</label>
-                    <input id="visitFrequency" name="visitFrequency" value={formData.visitFrequency} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="nextSkilledRnVisitDate" className={styles.label}>Next Scheduled Skilled RN Visit</label>
-                    <input id="nextSkilledRnVisitDate" name="nextSkilledRnVisitDate" value={formData.nextSkilledRnVisitDate} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="nextVisitDue" className={styles.label}>Next Visit Due</label>
-                    <input id="nextVisitDue" name="nextVisitDue" value={formData.nextVisitDue} onChange={handleChange} />
-                  </div>
-                  <div className={styles.field}>
-                    <label htmlFor="estimatedEndOfTherapy" className={styles.label}>Estimated End Date of Therapy</label>
-                    <input id="estimatedEndOfTherapy" name="estimatedEndOfTherapy" value={formData.estimatedEndOfTherapy} onChange={handleChange} />
-                  </div>
-                </div>
-              </>
-            )}
+    <div className={styles.row}>
+      <div className={styles.field}>
+        <label>Next Scheduled Specialty Infusion</label>
+        <input type="date" name="nextSpecialtyInfusionDate" value={formData.nextSpecialtyInfusionDate} onChange={handleChange} />
+      </div>
+      <div className={styles.field}>
+        <label>Next Infusion Due</label>
+        <input type="date" name="nextInfusionDue" value={formData.nextInfusionDue} onChange={handleChange} />
+      </div>
+      <div className={styles.field}>
+        <label>Estimated End Date of Therapy</label>
+        <input type="date" name="estimatedEndOfInfusion" value={formData.estimatedEndOfInfusion} onChange={handleChange} />
+      </div>
+    </div>
+  </>
+)}
+
+{activeTab === 'homecare' && (
+  <>
+    <div className={styles.row}>
+      {renderDropdown('homeTherapyType', 'Home Therapy Type', dropdowns.homeTherapyType)}
+      {renderDropdown('skilledRnVisitType', 'Skilled RN Visit Type', dropdowns.skilledRnVisitType)}
+      {renderDropdown('visitLocationNonSpecialty', 'Visit Location Non Specialty', dropdowns.visitLocationNonSpecialty)}
+    </div>
+    <div className={styles.row}>
+      {renderDropdown('visitFrequency', 'Visit Frequency', dropdowns.visitFrequency)}
+    </div>
+    <div className={styles.row}>
+      <div className={styles.field}>
+        <label>Next Scheduled Skilled RN Visit</label>
+        <input type="date" name="nextSkilledRnVisitDate" value={formData.nextSkilledRnVisitDate} onChange={handleChange} />
+      </div>
+      <div className={styles.field}>
+        <label>Next Visit Due</label>
+        <input type="date" name="nextVisitDue" value={formData.nextVisitDue} onChange={handleChange} />
+      </div>
+      <div className={styles.field}>
+        <label>Estimated End of Therapy</label>
+        <input type="date" name="estimatedEndOfTherapy" value={formData.estimatedEndOfTherapy} onChange={handleChange} />
+      </div>
+    </div>
+  </>
+)}
 
             {activeTab === 'notes' && (
               <div className={styles.row}>
@@ -254,28 +266,16 @@ export default function PatientForm({ existingPatient, onClose }) {
                 </div>
               </div>
             )}
-          </div>
+ </div>
 
           <div className={styles.actions}>
             {existingPatient?.id && (
-              <button
-                type="button"
-                onClick={handleDeactivate}
-                style={{
-                  backgroundColor: '#b00020',
-                  color: 'white',
-                  padding: '8px 12px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  marginRight: 'auto',
-                  cursor: 'pointer'
-                }}
-              >
+              <button type="button" onClick={handleDeactivate} style={{ backgroundColor: '#b00020', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', marginRight: 'auto', cursor: 'pointer' }}>
                 Deactivate
               </button>
             )}
-<button type="submit" className={styles.primaryButton}>Save</button>
-<button type="button" onClick={onClose} className={styles.primaryButton}>Cancel</button>
+            <button type="submit" className={styles.primaryButton}>Save</button>
+            <button type="button" onClick={onClose} className={styles.primaryButton}>Cancel</button>
           </div>
         </form>
       </div>

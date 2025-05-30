@@ -1,3 +1,4 @@
+// src/components/MainLayout.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -52,9 +53,8 @@ export default function MainLayout({ children }) {
         `}
       </style>
 
-      <nav className="nav-container">
+            <nav className="nav-container">
         <Link to="/" className="nav-link">Home</Link>
-        <Link to="/dashboard" className="nav-link">Dashboard</Link>
 
         <div className="nav-item">
           Patients ▾
@@ -68,12 +68,15 @@ export default function MainLayout({ children }) {
         <div className="nav-item">
           Staff ▾
           <div className="dropdown">
-            <Link to="/staff/list">Staff Manager</Link>
-            <Link to="/staff/calendar">Staff Calendar</Link>
+            <Link to="/staff/list?view=active">Active Staff</Link>
+            <Link to="/staff/list?view=inactive">Inactive Staff</Link>
+            <Link to="/staff/list?view=deleted">Archived Staff</Link>
           </div>
         </div>
 
         <Link to="/pharmacy" className="nav-link">Pharmacy</Link>
+
+        <Link to="/dashboard" className="nav-link">Dashboard</Link>
 
         <div className="nav-item">
           Admin ▾

@@ -1,13 +1,28 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
+import PatientList from './PatientList';
+import PatientForm from '../forms/PatientForm/PatientForm';
 
 export default function PatientPage() {
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const openEditModal = (patient) => {
+    setSelectedPatient(patient || null);
+    setShowForm(true);
+  };
+
+  const closeModal = () => {
+    setSelectedPatient(null);
+    setShowForm(false);
+  };
+
   return (
     <div>
-      <h2>Patient Area</h2>
-      <nav style={{ marginBottom: '10px' }}>
-      </nav>
-      <Outlet />
+      <PatientList openEditModal={openEditModal} />
+
+      {showForm && (
+        <PatientForm existingPatient={selectedPatient} onClose={closeModal} />
+      )}
     </div>
   );
 }

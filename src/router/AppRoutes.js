@@ -17,7 +17,7 @@ import VisitInfo from '../components/patients/VisitInfo';
 import DeactivatedPatientsList from '../components/patients/DeactivatedPatientsList';
 
 import StaffPage from '../components/staff/StaffPage';
-import StaffList from '../components/staff/StaffList';
+import StaffManager from '../components/staff/StaffManager';
 import StaffCalendar from '../components/staff/StaffCalendar';
 
 const AppRoutes = () => (
@@ -39,7 +39,7 @@ const AppRoutes = () => (
     </Route>
 
     <Route path="/staff" element={<StaffPage />}>
-      <Route path="list" element={<StaffList />} />
+      <Route path="list" element={<StaffManager />} />
       <Route path="calendar" element={<StaffCalendar />} />
     </Route>
   </Routes>

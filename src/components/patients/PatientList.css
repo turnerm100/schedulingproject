@@ -1,0 +1,9 @@
+.name-link {
+  background: none;
+  border: none;
+  color: #2b7bb9;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1em;
+  padding: 0;
+}
