@@ -53,7 +53,7 @@ export default function MainLayout({ children }) {
         `}
       </style>
 
-            <nav className="nav-container">
+      <nav className="nav-container">
         <Link to="/" className="nav-link">Home</Link>
 
         <div className="nav-item">
@@ -75,7 +75,6 @@ export default function MainLayout({ children }) {
         </div>
 
         <Link to="/pharmacy" className="nav-link">Pharmacy</Link>
-
         <Link to="/dashboard" className="nav-link">Dashboard</Link>
 
         <div className="nav-item">
@@ -88,12 +87,9 @@ export default function MainLayout({ children }) {
         </div>
       </nav>
 
-import { Outlet } from 'react-router-dom';
-
-// ... inside your component
-<main style={{ padding: '20px' }}>
-  <Outlet />
-</main>
+      <main style={{ padding: '20px' }}>
+        <Outlet />
+      </main>
     </div>
   );
 }
