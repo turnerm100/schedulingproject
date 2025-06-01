@@ -1,4 +1,4 @@
-// src/router/AppRoutes.js
+/// src/router/AppRoutes.js
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ import DeactivatedPatientsList from '../components/patients/DeactivatedPatientsL
 import StaffPage from '../components/staff/StaffPage';
 import StaffManager from '../components/staff/StaffManager';
 import StaffCalendar from '../components/staff/StaffCalendar';
+import StaffFormPage from '../pages/staff/StaffFormPage'; // ✅ Add this if not yet imported
 
 const AppRoutes = () => (
   <Routes>
@@ -41,8 +42,10 @@ const AppRoutes = () => (
       </Route>
 
       <Route path="staff" element={<StaffPage />}>
+        <Route index element={<StaffManager />} />            {/* default route */}
         <Route path="list" element={<StaffManager />} />
         <Route path="calendar" element={<StaffCalendar />} />
+        <Route path="new" element={<StaffFormPage />} />      {/* staff form route */}
       </Route>
     </Route>
   </Routes>

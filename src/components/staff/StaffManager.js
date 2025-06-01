@@ -1,4 +1,5 @@
 // src/components/staff/StaffManager.js
+import { Link } from 'react-router-dom'; // ✅ Make sure this is at the top
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db } from '../../firebase/config';
@@ -112,17 +113,25 @@ export default function StaffManager() {
     </table>
   );
 
-  return (
-    <div>
+return (
+  <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <h2>
         {view === 'active' && 'Active Staff'}
         {view === 'inactive' && 'Inactive Staff'}
         {view === 'deleted' && 'Archived Staff'}
       </h2>
 
-      {view === 'active' && renderStaffTable(activeStaff, 'active')}
-      {view === 'inactive' && renderStaffTable(inactiveStaff, 'inactive')}
-      {view === 'deleted' && renderStaffTable(archivedStaff, 'archived')}
+      {view === 'active' && (
+        <Link to="/staff/new">
+          <button>+ Add New Staff</button>
+        </Link>
+      )}
     </div>
-  );
+
+    {view === 'active' && renderStaffTable(activeStaff, 'active')}
+    {view === 'inactive' && renderStaffTable(inactiveStaff, 'inactive')}
+    {view === 'deleted' && renderStaffTable(archivedStaff, 'archived')}
+  </div>
+);
 }
