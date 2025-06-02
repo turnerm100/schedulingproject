@@ -18,7 +18,7 @@
   padding: 24px;
   border-radius: 10px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
@@ -129,4 +129,23 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+}
+
+.formGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 80px 1fr 1fr 1fr; /* Checkbox + 3 inputs */
+}
+
+.narrowInput input,
+.narrowInput select {
+  width: 100px;
 }

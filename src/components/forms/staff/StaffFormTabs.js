@@ -113,18 +113,17 @@ export default function StaffFormTabs({ activeTab, formData, setFormData, isEdit
             <option value="Per Diem">Per Diem</option>
           </select>
         </div>
-        <div className={styles.labelledInput}>
-          <label>FTE</label>
-          <input type="text" value={formData.fte} onChange={(e) => handleChange('fte', e.target.value)} />
-        </div>
-        <div className={styles.labelledInput}>
-          <label>Work Days</label>
-          <input type="text" value={formData.workDays} onChange={(e) => handleChange('workDays', e.target.value)} />
-        </div>
-        <div className={styles.labelledInput}>
-          <label>Work Hours</label>
-          <input type="text" value={formData.workHours} onChange={(e) => handleChange('workHours', e.target.value)} />
-        </div>
+<div className={styles.labelledInput}>
+  <label>Pharmacy Team</label>
+  <select value={formData.pharmacyTeam || ''} onChange={(e) => handleChange('pharmacyTeam', e.target.value)}>
+    <option value="">-- Select --</option>
+    <option value="Oncology">Oncology</option>
+    <option value="Infectious Disease">Infectious Disease</option>
+    <option value="General Infusion">General Infusion</option>
+    <option value="Transplant">Transplant</option>
+    {/* Add more as needed */}
+  </select>
+</div>
         <div className={styles.labelledInput}>
           <label>Work Status</label>
           <select value={formData.workStatus} onChange={(e) => handleChange('workStatus', e.target.value)}>
@@ -133,11 +132,11 @@ export default function StaffFormTabs({ activeTab, formData, setFormData, isEdit
             <option value="Inactive">Inactive</option>
           </select>
         </div>
-        <div className={styles.labelledInput}>
-          <label>Notes</label>
-          <textarea value={formData.notes} onChange={(e) => handleChange('notes', e.target.value)} />
-        </div>
-        <div className={styles.labelledInput}>
+<div className={styles.labelledInput} style={{ gridColumn: '1 / -1' }}>
+  <label>Notes</label>
+  <textarea value={formData.notes} onChange={(e) => handleChange('notes', e.target.value)} />
+</div>
+<div className={styles.labelledInput}>
           <label>
             <input
               type="checkbox"
@@ -163,7 +162,7 @@ export default function StaffFormTabs({ activeTab, formData, setFormData, isEdit
           <input type="text" value={formData.contact.homePhone} onChange={(e) => handleContactChange('homePhone', e.target.value)} />
         </div>
         <div className={styles.labelledInput}>
-          <label>Email</label>
+          <label>Work Email</label>
           <input type="email" value={formData.contact.email} onChange={(e) => handleContactChange('email', e.target.value)} />
         </div>
 
@@ -278,42 +277,87 @@ if (activeTab === 'schedule') {
 
       {/* Active Week Display */}
       <div style={{ marginBottom: '20px' }}>
-        {(() => {
-          const weekIdx = parseInt(activeWeek.replace('week', '')) - 1;
-          return (
-            <>
-              <h4 style={{ marginBottom: '10px' }}>{activeWeek.replace('week', 'Week ')}</h4>
-              {days.map((day) => (
-                <div key={day} className={styles.formGrid}>
-                  <div className={styles.labelledInput}>
-                    <label>{day} – Location</label>
-                    <input
-                      type="text"
-                      value={formData.schedule.weeks[weekIdx]?.[day]?.location || ''}
-                      onChange={(e) => handleScheduleChange(weekIdx, day, 'location', e.target.value)}
-                    />
-                  </div>
-                  <div className={styles.labelledInput}>
-                    <label>{day} – Start Time</label>
-                    <input
-                      type="time"
-                      value={formData.schedule.weeks[weekIdx]?.[day]?.start || ''}
-                      onChange={(e) => handleScheduleChange(weekIdx, day, 'start', e.target.value)}
-                    />
-                  </div>
-                  <div className={styles.labelledInput}>
-                    <label>{day} – Hours</label>
-                    <input
-                      type="text"
-                      value={formData.schedule.weeks[weekIdx]?.[day]?.hours || ''}
-                      onChange={(e) => handleScheduleChange(weekIdx, day, 'hours', e.target.value)}
-                    />
-                  </div>
-                </div>
-              ))}
-            </>
-          );
-        })()}
+{(() => {
+  const weekIdx = parseInt(activeWeek.replace('week', '')) - 1;
+
+  return days.map((day) => {
+    const dayData = formData.schedule.weeks[weekIdx]?.[day] || {};
+
+    const handleDayChange = (field, value) => {
+      const updatedWeeks = [...formData.schedule.weeks];
+      updatedWeeks[weekIdx][day] = {
+        ...updatedWeeks[weekIdx][day],
+        [field]: value,
+      };
+      setFormData((prev) => ({
+        ...prev,
+        schedule: {
+          ...prev.schedule,
+          weeks: updatedWeeks,
+        },
+      }));
+    };
+
+    const handleCheckboxChange = (checked) => {
+      handleDayChange('enabled', checked);
+    };
+
+    return (
+<div className={styles.formGrid}>
+  {/* Checkbox and Day Label */}
+  <div className={styles.labelledInput}>
+    <label className={styles.checkboxLabel}>
+      <input
+        type="checkbox"
+        checked={dayData.enabled || false}
+        onChange={(e) => handleCheckboxChange(e.target.checked)}
+      />
+      {day}
+    </label>
+  </div>
+
+  {/* Location Dropdown */}
+  <div className={styles.labelledInput}>
+    <label>Location</label>
+    <select
+      value={dayData.location || ''}
+      onChange={(e) => handleDayChange('location', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="Home">Home</option>
+      <option value="Infusion Suite">Infusion Suite</option>
+      <option value="Pharmacy">Pharmacy</option>
+      <option value="Remote">Remote</option>
+    </select>
+  </div>
+
+  {/* Start Time - Narrow */}
+  <div className={`${styles.labelledInput} ${styles.narrowInput}`}>
+    <label>Start Time</label>
+    <input
+      type="time"
+      value={dayData.start || ''}
+      onChange={(e) => handleDayChange('start', e.target.value)}
+    />
+  </div>
+
+  {/* Shift Hours - Dropdown + Narrow */}
+  <div className={`${styles.labelledInput} ${styles.narrowInput}`}>
+    <label>Shift Hours</label>
+    <select
+      value={dayData.hours || ''}
+      onChange={(e) => handleDayChange('hours', e.target.value)}
+    >
+      <option value="">--</option>
+      {Array.from({ length: 24 }, (_, i) => (i + 1) * 0.5).map((val) => (
+        <option key={val} value={val}>{val}</option>
+      ))}
+    </select>
+  </div>
+</div>
+    );
+  });
+})()}
       </div>
     </>
   );
