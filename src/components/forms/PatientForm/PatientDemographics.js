@@ -1,3 +1,5 @@
+//PatientDemographics.js//
+
 import React, { useState } from 'react';
 import { db } from '../../../firebase/config';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';

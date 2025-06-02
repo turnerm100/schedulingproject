@@ -1,5 +1,5 @@
 // src/components/staff/StaffManager.js
-import { Link } from 'react-router-dom'; // ✅ Make sure this is at the top
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db } from '../../firebase/config';
@@ -9,8 +9,9 @@ import {
   setDoc,
   deleteDoc,
   doc,
-  Timestamp
+  Timestamp,
 } from 'firebase/firestore';
+import StaffForm from '../forms/staff/StaffForm';
 import './StaffManager.css';
 
 export default function StaffManager() {
@@ -20,6 +21,9 @@ export default function StaffManager() {
   const [activeStaff, setActiveStaff] = useState([]);
   const [inactiveStaff, setInactiveStaff] = useState([]);
   const [archivedStaff, setArchivedStaff] = useState([]);
+
+  const [showForm, setShowForm] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
   const currentUserEmail = 'admin@example.com';
 
   useEffect(() => {
@@ -38,11 +42,16 @@ export default function StaffManager() {
     setArchivedStaff(deletedSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
+  const onEditStaff = (staff) => {
+  setSelectedStaff(staff);
+  setShowForm(true);
+};
+
   const deactivateStaff = async (staff) => {
     await setDoc(doc(db, 'inactiveStaff', staff.id), {
       ...staff,
       status: 'inactive',
-      updatedAt: Timestamp.now()
+      updatedAt: Timestamp.now(),
     });
     await deleteDoc(doc(db, 'staff', staff.id));
     fetchAllStaff();
@@ -52,7 +61,7 @@ export default function StaffManager() {
     await setDoc(doc(db, 'staff', staff.id), {
       ...staff,
       status: 'active',
-      updatedAt: Timestamp.now()
+      updatedAt: Timestamp.now(),
     });
     await deleteDoc(doc(db, 'inactiveStaff', staff.id));
     fetchAllStaff();
@@ -63,7 +72,7 @@ export default function StaffManager() {
       ...staff,
       status: 'deleted',
       deletedAt: Timestamp.now(),
-      deletedBy: currentUserEmail
+      deletedBy: currentUserEmail,
     });
     await deleteDoc(doc(db, source, staff.id));
     fetchAllStaff();
@@ -83,8 +92,16 @@ export default function StaffManager() {
       <tbody>
         {list.map((staff) => (
           <tr key={staff.id}>
-            <td>{staff.fullName}</td>
-            <td>{staff.position}</td>
+            <td>
+  <button
+    className="link-button"
+    onClick={() => onEditStaff(staff)}
+    style={{ background: 'none', border: 'none', color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}
+  >
+    {staff.fullName || `${staff.firstName} ${staff.lastName}`}
+  </button>
+</td>
+            <td>{staff.position || staff.positionTitle}</td>
             <td>{staff.schedulingTeam}</td>
             <td>{staff.fte}</td>
             <td>
@@ -113,25 +130,38 @@ export default function StaffManager() {
     </table>
   );
 
-return (
-  <div>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <h2>
-        {view === 'active' && 'Active Staff'}
-        {view === 'inactive' && 'Inactive Staff'}
-        {view === 'deleted' && 'Archived Staff'}
-      </h2>
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>
+          {view === 'active' && 'Active Staff'}
+          {view === 'inactive' && 'Inactive Staff'}
+          {view === 'deleted' && 'Archived Staff'}
+        </h2>
 
-      {view === 'active' && (
-        <Link to="/staff/new">
-          <button>+ Add New Staff</button>
-        </Link>
+        {view === 'active' && (
+          <button onClick={() => {
+            setSelectedStaff(null);
+            setShowForm(true);
+          }}>
+            + Add New Staff
+          </button>
+        )}
+      </div>
+
+      {view === 'active' && renderStaffTable(activeStaff, 'active')}
+      {view === 'inactive' && renderStaffTable(inactiveStaff, 'inactive')}
+      {view === 'deleted' && renderStaffTable(archivedStaff, 'archived')}
+
+      {showForm && (
+        <StaffForm
+          onClose={() => {
+            setShowForm(false);
+            fetchAllStaff(); // Refresh list after save
+          }}
+          existingStaff={selectedStaff}
+        />
       )}
     </div>
-
-    {view === 'active' && renderStaffTable(activeStaff, 'active')}
-    {view === 'inactive' && renderStaffTable(inactiveStaff, 'inactive')}
-    {view === 'deleted' && renderStaffTable(archivedStaff, 'archived')}
-  </div>
-);
+  );
 }

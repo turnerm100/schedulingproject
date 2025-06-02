@@ -1,11 +1,52 @@
-.formCard {
+/* src/components/forms/staff/StaffForm.module.css */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
   background: white;
   padding: 24px;
   border-radius: 10px;
-  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 900px;
-  margin: 20px auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #153D64;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .tabs {
@@ -20,6 +61,7 @@
   background: #e0e0e0;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .tabButton.active {
@@ -28,17 +70,25 @@
   font-weight: bold;
 }
 
-.formGrid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  margin-bottom: 20px;
+.scrollableContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  min-height: 500px; /* ✅ Prevents form height from shrinking */
+  max-height: 500px; /* Optional: Limits very tall content from growing too large */
 }
 
 .labelledInput {
   display: flex;
   flex-direction: column;
   font-size: 14px;
+  gap: 6px;
+}
+
+.labelledInput label {
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
 .labelledInput input,
@@ -47,10 +97,36 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 14px;
+}
+
+.formGrid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  margin-bottom: 20px;
 }
 
 .formActions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.saveButton {
+  background-color: #153D64;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  color: black;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }

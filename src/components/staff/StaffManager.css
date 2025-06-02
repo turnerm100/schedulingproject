@@ -27,3 +27,13 @@ button {
 button:hover {
   background-color: #1a4d89;
 }
+
+.link-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
