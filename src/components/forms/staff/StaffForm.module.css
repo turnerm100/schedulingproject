@@ -173,3 +173,11 @@
   min-height: 10em; /* approx. 10 lines tall */
   resize: vertical; /* allow user to resize if desired */
 }
+
+.input20chars {
+  width: 20ch;
+}
+
+.input45chars {
+  width: 45ch;
+}

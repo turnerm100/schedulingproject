@@ -207,91 +207,170 @@ if (activeTab === 'shift') {
   );
 }
 
-  if (activeTab === 'contact') {
-    return (
-      <div className={styles.formGrid}>
+if (activeTab === 'contact') {
+  return (
+    <>
+      {/* Phone Numbers */}
+      <div className={styles.formRow}>
         <div className={styles.labelledInput}>
           <label>Work Phone</label>
-          <input type="text" value={formData.contact.workPhone} onChange={(e) => handleContactChange('workPhone', e.target.value)} />
+          <input
+            type="text"
+            className={styles.input20chars}
+            value={formData.contact.workPhone}
+            onChange={(e) => handleContactChange('workPhone', e.target.value)}
+          />
         </div>
+
         <div className={styles.labelledInput}>
           <label>Home Phone</label>
-          <input type="text" value={formData.contact.homePhone} onChange={(e) => handleContactChange('homePhone', e.target.value)} />
+          <input
+            type="text"
+            className={styles.input20chars}
+            value={formData.contact.homePhone}
+            onChange={(e) => handleContactChange('homePhone', e.target.value)}
+          />
         </div>
+      </div>
+
+      {/* Work Email */}
+      <div className={styles.formRow}>
         <div className={styles.labelledInput}>
           <label>Work Email</label>
-          <input type="email" value={formData.contact.email} onChange={(e) => handleContactChange('email', e.target.value)} />
+          <input
+            type="email"
+            className={styles.input45chars}
+            value={formData.contact.email}
+            onChange={(e) => handleContactChange('email', e.target.value)}
+          />
         </div>
-
-        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '8px', marginTop: '20px' }}>
-          <button type="button" className={`${styles.tabButton} ${activeAddressTab === 'home' ? styles.active : ''}`} onClick={() => setActiveAddressTab('home')}>Home Address</button>
-          <button type="button" className={`${styles.tabButton} ${activeAddressTab === 'shipping' ? styles.active : ''}`} onClick={() => setActiveAddressTab('shipping')}>Shipping Address</button>
-        </div>
-
-        {activeAddressTab === 'home' && (
-          <>
-            <div className={styles.labelledInput}>
-              <label>Address Line 1</label>
-              <input type="text" value={formData.contact.homeAddress.line1} onChange={(e) => handleAddressChange('homeAddress', 'line1', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>Address Line 2</label>
-              <input type="text" value={formData.contact.homeAddress.line2 || ''} onChange={(e) => handleAddressChange('homeAddress', 'line2', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>City</label>
-              <input type="text" value={formData.contact.homeAddress.city} onChange={(e) => handleAddressChange('homeAddress', 'city', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>State</label>
-              <input type="text" value={formData.contact.homeAddress.state} onChange={(e) => handleAddressChange('homeAddress', 'state', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>Zip Code</label>
-              <input type="text" value={formData.contact.homeAddress.zip} onChange={(e) => handleAddressChange('homeAddress', 'zip', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={copyAddressChecked}
-                  onChange={(e) => {
-                    setCopyAddressChecked(e.target.checked);
-                    if (e.target.checked) copyHomeToShipping();
-                  }}
-                /> Copy Home Address to Shipping
-              </label>
-            </div>
-          </>
-        )}
-
-        {activeAddressTab === 'shipping' && (
-          <>
-            <div className={styles.labelledInput}>
-              <label>Address Line 1</label>
-              <input type="text" value={formData.contact.shippingAddress.line1} onChange={(e) => handleAddressChange('shippingAddress', 'line1', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>Address Line 2</label>
-              <input type="text" value={formData.contact.shippingAddress.line2 || ''} onChange={(e) => handleAddressChange('shippingAddress', 'line2', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>City</label>
-              <input type="text" value={formData.contact.shippingAddress.city} onChange={(e) => handleAddressChange('shippingAddress', 'city', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>State</label>
-              <input type="text" value={formData.contact.shippingAddress.state} onChange={(e) => handleAddressChange('shippingAddress', 'state', e.target.value)} />
-            </div>
-            <div className={styles.labelledInput}>
-              <label>Zip Code</label>
-              <input type="text" value={formData.contact.shippingAddress.zip} onChange={(e) => handleAddressChange('shippingAddress', 'zip', e.target.value)} />
-            </div>
-          </>
-        )}
       </div>
-    );
-  }
+
+      {/* Address Tabs */}
+      <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '8px', marginTop: '20px' }}>
+        <button
+          type="button"
+          className={`${styles.tabButton} ${activeAddressTab === 'home' ? styles.active : ''}`}
+          onClick={() => setActiveAddressTab('home')}
+        >
+          Home Address
+        </button>
+        <button
+          type="button"
+          className={`${styles.tabButton} ${activeAddressTab === 'shipping' ? styles.active : ''}`}
+          onClick={() => setActiveAddressTab('shipping')}
+        >
+          Shipping Address
+        </button>
+      </div>
+
+      {/* Home Address Panel */}
+      {activeAddressTab === 'home' && (
+        <>
+          <div className={styles.labelledInput}>
+            <label>Address Line 1</label>
+            <input
+              type="text"
+              value={formData.contact.homeAddress.line1}
+              onChange={(e) => handleAddressChange('homeAddress', 'line1', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>Address Line 2</label>
+            <input
+              type="text"
+              value={formData.contact.homeAddress.line2 || ''}
+              onChange={(e) => handleAddressChange('homeAddress', 'line2', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>City</label>
+            <input
+              type="text"
+              value={formData.contact.homeAddress.city}
+              onChange={(e) => handleAddressChange('homeAddress', 'city', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>State</label>
+            <input
+              type="text"
+              value={formData.contact.homeAddress.state}
+              onChange={(e) => handleAddressChange('homeAddress', 'state', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>Zip Code</label>
+            <input
+              type="text"
+              value={formData.contact.homeAddress.zip}
+              onChange={(e) => handleAddressChange('homeAddress', 'zip', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>
+              <input
+                type="checkbox"
+                checked={copyAddressChecked}
+                onChange={(e) => {
+                  setCopyAddressChecked(e.target.checked);
+                  if (e.target.checked) copyHomeToShipping();
+                }}
+              />{' '}
+              Copy Home Address to Shipping
+            </label>
+          </div>
+        </>
+      )}
+
+      {/* Shipping Address Panel */}
+      {activeAddressTab === 'shipping' && (
+        <>
+          <div className={styles.labelledInput}>
+            <label>Address Line 1</label>
+            <input
+              type="text"
+              value={formData.contact.shippingAddress.line1}
+              onChange={(e) => handleAddressChange('shippingAddress', 'line1', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>Address Line 2</label>
+            <input
+              type="text"
+              value={formData.contact.shippingAddress.line2 || ''}
+              onChange={(e) => handleAddressChange('shippingAddress', 'line2', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>City</label>
+            <input
+              type="text"
+              value={formData.contact.shippingAddress.city}
+              onChange={(e) => handleAddressChange('shippingAddress', 'city', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>State</label>
+            <input
+              type="text"
+              value={formData.contact.shippingAddress.state}
+              onChange={(e) => handleAddressChange('shippingAddress', 'state', e.target.value)}
+            />
+          </div>
+          <div className={styles.labelledInput}>
+            <label>Zip Code</label>
+            <input
+              type="text"
+              value={formData.contact.shippingAddress.zip}
+              onChange={(e) => handleAddressChange('shippingAddress', 'zip', e.target.value)}
+            />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
 
 if (activeTab === 'schedule') {
   return (
