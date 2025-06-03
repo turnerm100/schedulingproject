@@ -72,83 +72,140 @@ export default function StaffFormTabs({ activeTab, formData, setFormData, isEdit
     }));
   };
 
-  if (activeTab === 'shift') {
-    return (
-      <div className={styles.formGrid}>
-        <div className={styles.labelledInput}>
-          <label>First Name</label>
-          <input type="text" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
-        </div>
+if (activeTab === 'shift') {
+  return (
+    <div>
+      {/* Row 1: Last Name, First Name */}
+      <div className={styles.formRow}>
         <div className={styles.labelledInput}>
           <label>Last Name</label>
-          <input type="text" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
+          <input
+            type="text"
+            className={styles.charWidth30}
+            value={formData.lastName}
+            onChange={(e) => handleChange('lastName', e.target.value)}
+          />
         </div>
         <div className={styles.labelledInput}>
-          <label>Employee ID</label>
-          <input type="text" value={formData.employeeId} onChange={(e) => handleChange('employeeId', e.target.value)} />
-        </div>
-        <div className={styles.labelledInput}>
-          <label>Position Title</label>
-          <select value={formData.positionTitle} onChange={(e) => handleChange('positionTitle', e.target.value)}>
-            <option value="">-- Select --</option>
-            <option value="RN">RN</option>
-            <option value="Scheduler">Scheduler</option>
-            <option value="Pharmacist">Pharmacist</option>
-          </select>
-        </div>
-        <div className={styles.labelledInput}>
-          <label>Scheduling Team</label>
-          <select value={formData.schedulingTeam} onChange={(e) => handleChange('schedulingTeam', e.target.value)}>
-            <option value="">-- Select --</option>
-            <option value="Infusion">Infusion</option>
-            <option value="Pharmacy">Pharmacy</option>
-          </select>
-        </div>
-        <div className={styles.labelledInput}>
-          <label>Shift Type</label>
-          <select value={formData.shiftType} onChange={(e) => handleChange('shiftType', e.target.value)}>
-            <option value="">-- Select --</option>
-            <option value="Full-Time">Full-Time</option>
-            <option value="Part-Time">Part-Time</option>
-            <option value="Per Diem">Per Diem</option>
-          </select>
-        </div>
-<div className={styles.labelledInput}>
-  <label>Pharmacy Team</label>
-  <select value={formData.pharmacyTeam || ''} onChange={(e) => handleChange('pharmacyTeam', e.target.value)}>
-    <option value="">-- Select --</option>
-    <option value="Oncology">Oncology</option>
-    <option value="Infectious Disease">Infectious Disease</option>
-    <option value="General Infusion">General Infusion</option>
-    <option value="Transplant">Transplant</option>
-    {/* Add more as needed */}
-  </select>
-</div>
-        <div className={styles.labelledInput}>
-          <label>Work Status</label>
-          <select value={formData.workStatus} onChange={(e) => handleChange('workStatus', e.target.value)}>
-            <option value="">-- Select --</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-<div className={styles.labelledInput} style={{ gridColumn: '1 / -1' }}>
-  <label>Notes</label>
-  <textarea value={formData.notes} onChange={(e) => handleChange('notes', e.target.value)} />
-</div>
-<div className={styles.labelledInput}>
-          <label>
-            <input
-              type="checkbox"
-              checked={!formData.active}
-              onChange={(e) => handleChange('active', !e.target.checked)}
-            />{' '}
-            Deactivate
-          </label>
+          <label>First Name</label>
+          <input
+            type="text"
+            className={styles.charWidth30}
+            value={formData.firstName}
+            onChange={(e) => handleChange('firstName', e.target.value)}
+          />
         </div>
       </div>
-    );
-  }
+
+{/* Row 2: Employee ID, Position Title */}
+<div className={styles.formRow}>
+  <div className={styles.labelledInput}>
+    <label>Employee ID</label>
+    <input
+      type="text"
+      className={styles.charWidth30}
+      value={formData.employeeId}
+      onChange={(e) => handleChange('employeeId', e.target.value)}
+    />
+  </div>
+  <div className={styles.labelledInput}>
+    <label>Position Title</label>
+    <select
+      className={styles.charWidth30}
+      value={formData.positionTitle}
+      onChange={(e) => handleChange('positionTitle', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="RN">RN</option>
+      <option value="Scheduler">Scheduler</option>
+      <option value="Pharmacist">Pharmacist</option>
+    </select>
+  </div>
+</div>
+
+{/* Row 3: Shift Type, Work Status */}
+<div className={styles.formRow}>
+  <div className={styles.labelledInput}>
+    <label>Shift Type</label>
+    <select
+      className={styles.charWidth30}
+      value={formData.shiftType}
+      onChange={(e) => handleChange('shiftType', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="Full-Time">Full-Time</option>
+      <option value="Part-Time">Part-Time</option>
+      <option value="Per Diem">Per Diem</option>
+    </select>
+  </div>
+  <div className={styles.labelledInput}>
+    <label>Work Status</label>
+    <select
+      className={styles.charWidth30}
+      value={formData.workStatus}
+      onChange={(e) => handleChange('workStatus', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+    </select>
+  </div>
+</div>
+
+{/* Row 4: Scheduling Team, Pharmacy Team */}
+<div className={styles.formRow}>
+  <div className={styles.labelledInput}>
+    <label>Scheduling Team</label>
+    <select
+      className={styles.charWidth30}
+      value={formData.schedulingTeam}
+      onChange={(e) => handleChange('schedulingTeam', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="Infusion">Infusion</option>
+      <option value="Pharmacy">Pharmacy</option>
+    </select>
+  </div>
+  <div className={styles.labelledInput}>
+    <label>Pharmacy Team</label>
+    <select
+      className={styles.charWidth30}
+      value={formData.pharmacyTeam || ''}
+      onChange={(e) => handleChange('pharmacyTeam', e.target.value)}
+    >
+      <option value="">-- Select --</option>
+      <option value="Oncology">Oncology</option>
+      <option value="Infectious Disease">Infectious Disease</option>
+      <option value="General Infusion">General Infusion</option>
+      <option value="Transplant">Transplant</option>
+    </select>
+  </div>
+</div>
+
+      {/* Row 5: Notes full-width */}
+<div className={styles.labelledInput} style={{ marginBottom: '20px' }}>
+  <label>Notes</label>
+  <textarea
+    className={styles.notesArea}
+    value={formData.notes}
+    onChange={(e) => handleChange('notes', e.target.value)}
+  />
+</div>
+
+      {/* Row 6: Deactivate checkbox */}
+      <div className={styles.labelledInput}>
+        <label>
+          <input
+            type="checkbox"
+            checked={!formData.active}
+            onChange={(e) => handleChange('active', !e.target.checked)}
+          />{' '}
+          Deactivate
+        </label>
+      </div>
+    </div>
+  );
+}
 
   if (activeTab === 'contact') {
     return (

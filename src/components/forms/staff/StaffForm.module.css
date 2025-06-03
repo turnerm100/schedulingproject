@@ -14,11 +14,11 @@
 }
 
 .modal {
-  background: white;
+  background: #f5f5f5; /* Light gray background */
   padding: 24px;
   border-radius: 10px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
@@ -34,18 +34,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #153D64; /* Deep blue */
+  padding: 16px 20px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .modalTitle {
   font-size: 24px;
   font-weight: bold;
-  color: #153D64;
+  color: white; /* Title text in white */
+  margin: 0;
 }
 
 .closeButton {
   background: transparent;
   border: none;
-  font-size: 24px;
+  font-size: 28px;
+  color: white; /* White X button */
   cursor: pointer;
 }
 
@@ -75,8 +81,8 @@
   flex-direction: column;
   gap: 20px;
   overflow-y: auto;
-  min-height: 500px; /* ✅ Prevents form height from shrinking */
-  max-height: 500px; /* Optional: Limits very tall content from growing too large */
+  min-height: 400px; /* ✅ Prevents form height from shrinking */
+  max-height: 400px; /* Optional: Limits very tall content from growing too large */
 }
 
 .labelledInput {
@@ -148,4 +154,22 @@
 .narrowInput input,
 .narrowInput select {
   width: 100px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.charWidth30 {
+  width: 30ch; /* Approx. 30 character width */
+}
+
+.notesArea {
+  width: 80ch;   /* ~90 characters wide */
+  height: auto;
+  min-height: 10em; /* approx. 10 lines tall */
+  resize: vertical; /* allow user to resize if desired */
 }
